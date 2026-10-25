@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f9fc">
+<title>九九のアレイ図 | かけ算を目で見よう</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#19283b;background:#f7f9fc}*{box-sizing:border-box}body{margin:0;padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}main{max-width:940px;margin:0 auto;padding:18px 0 36px}h1{font-size:clamp(23px,4vw,34px);margin:0 0 7px}p{margin:0;color:#58687b}.panel{background:white;border:1px solid #dce5ee;border-radius:23px;padding:clamp(16px,3vw,28px);margin-top:17px;box-shadow:0 6px 24px #1d4c7820}.equation{display:flex;justify-content:center;align-items:center;gap:clamp(8px,2.7vw,23px);font-size:clamp(33px,7vw,66px);font-weight:800;font-variant-numeric:tabular-nums;margin:3px auto 18px}.operator{color:#667789}.answer{color:#2171b7;min-width:1.5em;text-align:center}.array-area{background:#f3f7fb;border-radius:18px;min-height:245px;display:flex;align-items:center;justify-content:center;padding:18px;overflow:hidden}.dots{display:grid;gap:clamp(7px,1.4vw,13px);justify-content:center;align-content:center}.dot{width:var(--dot-size);height:var(--dot-size);border-radius:50%;background:#3487da;box-shadow:inset 0 -2px 2px #00000015}.dot.new{background:#e9a145}.controls{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:23px}.control-heading{display:flex;justify-content:space-between;align-items:center;font-size:18px;font-weight:700}.control-heading output{font-size:28px}input[type=range]{width:100%;accent-color:#2779cb;height:33px;cursor:pointer}.actions{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:12px;align-items:center}.step-buttons{display:flex;gap:9px;flex-wrap:wrap}button{appearance:none;border:0;border-radius:13px;padding:14px 19px;font:700 17px inherit;font-size:17px;font-weight:700;cursor:pointer;touch-action:manipulation;background:#2879ca;color:white;min-height:51px}button.secondary{background:#e8eef5;color:#20344a}button:disabled{opacity:.35;cursor:default}.toggle{display:flex;gap:9px;align-items:center;font-size:16px;cursor:pointer}.toggle input{width:21px;height:21px;accent-color:#2879ca}.help{margin-top:15px;text-align:center;line-height:1.65;font-size:15px}.foot{font-size:13px;text-align:center;margin-top:18px;color:#68778a}@media(max-width:560px){.controls{gap:12px}.array-area{min-height:205px}.actions{align-items:stretch}.step-buttons{width:100%}.step-buttons button{flex:1}.toggle{padding:9px 0}}@media(prefers-reduced-motion:no-preference){.dot{animation:appear .16s ease-out}@keyframes appear{from{transform:scale(.7);opacity:.35}to{transform:scale(1);opacity:1}}}
+</style>
+</head>
+<body><main>
+<h1>九九を 目で見てみよう</h1><p>たてと よこの数を かえて、まるの ふえかたを 見よう。</p>
+<section class="panel" aria-label="かけ算のアレイ図">
+<div class="equation" aria-live="polite"><span id="rowsEquation">2</span><span class="operator">×</span><span id="colsEquation">3</span><span class="operator">＝</span><span class="answer" id="answer">6</span></div>
+<div class="array-area"><div id="dots" class="dots" role="img" aria-label="たて2個、よこ3列、全部で6個の丸"></div></div>
+<div class="controls">
+<label><span class="control-heading">たての数 <output id="rowsValue">2</output></span><input id="rows" type="range" min="1" max="9" step="1" value="2"></label>
+<label><span class="control-heading">よこの列の数 <output id="colsValue">3</output></span><input id="cols" type="range" min="1" max="9" step="1" value="3"></label>
+</div>
+<div class="actions"><div class="step-buttons"><button class="secondary" id="decrease" type="button">− 1れつ</button><button id="increase" type="button">＋ 1れつ ふやす</button><button class="secondary" id="reset" type="button">もどす</button></div><label class="toggle"><input type="checkbox" id="showAnswer" checked>こたえを 表示</label></div>
+<p class="help">🔵 青は これまでの列。 🟠 オレンジは いちばん右の列。<br>1れつ ふやすと、たての数だけ まるが ふえるよ。</p>
+</section><p class="foot">iPad・スマートフォン・パソコン対応／インターネット接続不要</p>
+</main>
+<script>
+(()=>{'use strict';const $=id=>document.getElementById(id);const rows=$('rows'),cols=$('cols'),dots=$('dots'),toggle=$('showAnswer');function render(){const r=Number(rows.value),c=Number(cols.value);$('rowsEquation').textContent=r;$('colsEquation').textContent=c;$('rowsValue').textContent=r;$('colsValue').textContent=c;$('answer').textContent=toggle.checked?String(r*c):'？';$('decrease').disabled=c===1;$('increase').disabled=c===9;const maxWidth=Math.min(750,window.innerWidth-105),maxHeight=300;const gap=9;const size=Math.max(9,Math.min(29,Math.floor((maxWidth-(c-1)*gap)/c),Math.floor((maxHeight-(r-1)*gap)/r)));dots.style.setProperty('--dot-size',size+'px');dots.style.gridTemplateColumns=`repeat(${c}, ${size}px)`;dots.replaceChildren();for(let y=0;y<r;y++){for(let x=0;x<c;x++){const dot=document.createElement('span');dot.className='dot'+(x===c-1&&c>1?' new':'');dots.appendChild(dot)}}dots.setAttribute('aria-label',`たて${r}個、よこ${c}列、全部で${r*c}個の丸`)}rows.addEventListener('input',render);cols.addEventListener('input',render);toggle.addEventListener('change',render);$('decrease').addEventListener('click',()=>{cols.value=Math.max(1,Number(cols.value)-1);render()});$('increase').addEventListener('click',()=>{cols.value=Math.min(9,Number(cols.value)+1);render()});$('reset').addEventListener('click',()=>{rows.value=2;cols.value=3;toggle.checked=true;render()});window.addEventListener('resize',render);render()})();
+</script>
+</body></html>
